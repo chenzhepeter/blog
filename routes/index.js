@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 var crypto = require('crypto'),
+  fs = require('fs'),
+  formidable = require('formidable'),
   User = require('../models/user.js'),
   Post = require('../models/post.js');
 
@@ -130,6 +132,42 @@ router.get('/logout', function (req, res) {
   req.session.user = null;
   req.flash('success', '登出成功!');
   res.redirect('/'); //登出成功后跳转到主页
+});
+
+router.get('/upload', checkLogin);
+router.get('/upload', function (req, res) {
+  res.render('upload', {
+    title: '文件上传',
+    user: req.session.user,
+    success: req.flash('success').toString(),
+    error: req.flash('error').toString()
+  });
+});
+
+router.post('/upload', checkLogin);
+router.post('/upload', function (req, res) {
+  var form = new formidable.IncomingForm();
+  form.parse(req, function (err, fields, files) {
+    console.log(files);
+    // `file` is the name of the <input> field of type `file`
+
+    for (var i in files) {
+      var old_path = files[i].path,
+        file_size = files[i].size,
+        file_ext = files[i].name.split('.').pop(),
+        index = old_path.lastIndexOf('/') + 1,
+        file_name = old_path.substr(index),
+        new_path = './public/images/' + file_name + '.' + file_ext;
+
+      if (file_size == 0) {
+        fs.unlinkSync(old_path);
+      } else {
+        fs.renameSync(old_path, new_path);
+      }
+    }
+    req.flash('success', '文件上传成功!');
+    res.redirect('/upload');
+  });
 });
 
 function checkLogin(req, res, next) {
