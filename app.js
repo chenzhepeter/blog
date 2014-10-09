@@ -10,6 +10,29 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var hbs = require('hbs');
 hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+  switch (operator) {
+  case '==':
+    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+  case '===':
+    return (v1 === v2) ? options.fn(this) : options.inverse(this);
+  case '<':
+    return (v1 < v2) ? options.fn(this) : options.inverse(this);
+  case '<=':
+    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+  case '>':
+    return (v1 > v2) ? options.fn(this) : options.inverse(this);
+  case '>=':
+    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+  case '&&':
+    return (v1 && v2) ? options.fn(this) : options.inverse(this);
+  case '||':
+    return (v1 || v2) ? options.fn(this) : options.inverse(this);
+  default:
+    return options.inverse(this);
+  }
+});
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
