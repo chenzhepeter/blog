@@ -33,6 +33,12 @@ hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
     return options.inverse(this);
   }
 });
+hbs.registerHelper('add', function(value, addition){
+  return value + addition;
+});
+hbs.registerHelper('subtract', function(value, addition){
+  return value - addition;
+});
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
