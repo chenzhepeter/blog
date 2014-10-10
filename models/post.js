@@ -26,7 +26,8 @@ Post.prototype.save = function (callback) {
     name: this.name,
     time: time,
     title: this.title,
-    post: this.post
+    post: this.post,
+    comments: []
   };
   //打开数据库
   mongodb.open(function (err, db) {
@@ -88,7 +89,7 @@ Post.getAll = function (name, callback) {
 };
 
 //获取一篇文章
-Post.getOne = function(name, day, title, callback) {
+Post.getOne = function (name, day, title, callback) {
   //打开数据库
   mongodb.open(function (err, db) {
     if (err) {
@@ -111,15 +112,20 @@ Post.getOne = function(name, day, title, callback) {
           return callback(err);
         }
         //解析 markdown 为 html
-        doc.post = markdown.toHTML(doc.post);
-        callback(null, doc);//返回查询的一篇文章
+        if (doc) {
+          doc.post = markdown.toHTML(doc.post);
+          doc.comments.forEach(function (comment) {
+            comment.content = markdown.toHTML(comment.content);
+          });
+        }
+        callback(null, doc); //返回查询的一篇文章
       });
     });
   });
 };
 
 //返回原始发表的内容（markdown 格式）
-Post.edit = function(name, day, title, callback) {
+Post.edit = function (name, day, title, callback) {
   //打开数据库
   mongodb.open(function (err, db) {
     if (err) {
@@ -141,14 +147,14 @@ Post.edit = function(name, day, title, callback) {
         if (err) {
           return callback(err);
         }
-        callback(null, doc);//返回查询的一篇文章（markdown 格式）
+        callback(null, doc); //返回查询的一篇文章（markdown 格式）
       });
     });
   });
 };
 
 //更新一篇文章及其相关信息
-Post.update = function(name, day, title, post, callback) {
+Post.update = function (name, day, title, post, callback) {
   //打开数据库
   mongodb.open(function (err, db) {
     if (err) {
@@ -166,7 +172,9 @@ Post.update = function(name, day, title, post, callback) {
         "time.day": day,
         "title": title
       }, {
-        $set: {post: post}
+        $set: {
+          post: post
+        }
       }, function (err) {
         mongodb.close();
         if (err) {
@@ -179,7 +187,7 @@ Post.update = function(name, day, title, post, callback) {
 };
 
 //删除一篇文章
-Post.remove = function(name, day, title, callback) {
+Post.remove = function (name, day, title, callback) {
   //打开数据库
   mongodb.open(function (err, db) {
     if (err) {
