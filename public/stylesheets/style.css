@@ -88,7 +88,6 @@ article a:hover {
   color: #f9f9f9;
   -webkit-transition: color .2s linear;
 }
-
 .archive {
   list-style: none;
   line-height: 28px;
@@ -116,4 +115,11 @@ article a:hover {
   background-color: #ffffff;
   color: #000000;
   -webkit-transition: color .2s linear;
+}
+.search {
+  border: 0;
+  width: 6em;
+  text-align: center;
+  font-size: 1em;
+  margin: 0.5em 0;
 }
