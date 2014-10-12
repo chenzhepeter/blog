@@ -1,9 +1,12 @@
 <br />
 {{#each post.comments}}
-  <p><a href="{{website}}">{{name }}</a>
-    <span class="info">回复于 {{time }}</span>
-  </p>
-  <p>{{{content}}}</p>
+  <div style="padding-left:4em">
+    <p>
+      <img src="{{head}}" class="l_head" /><a href="{{website}}">{{name}}</a>
+      <span class="info">回复于 {{time}}</span>
+    </p>
+    <p>{{{content}}}</p>
+  </div>
 {{/each}}
 
 <form method="post">

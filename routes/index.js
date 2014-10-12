@@ -10,7 +10,7 @@ var crypto = require('crypto'),
 
 /* GET home page. */
 router.get('/', function (req, res) {
- //判断是否是第一页，并把请求的页数转换成 number 类型
+  //判断是否是第一页，并把请求的页数转换成 number 类型
   var page = req.query.p ? parseInt(req.query.p) : 1;
   //查询并返回第 page 页的 10 篇文章
   Post.getTen(null, page, function (err, posts, total) {
@@ -124,7 +124,7 @@ router.post('/post', checkLogin);
 router.post('/post', function (req, res) {
   var currentUser = req.session.user,
     tags = [req.body.tag1, req.body.tag2, req.body.tag3],
-    post = new Post(currentUser.name, req.body.title, tags, req.body.post);
+    post = new Post(currentUser.name, currentUser.head, req.body.title, tags, req.body.post);
   post.save(function (err) {
     if (err) {
       req.flash('error', err);
@@ -265,14 +265,18 @@ router.get('/u/:name/:day/:title', function (req, res) {
 
 router.post('/u/:name/:day/:title', function (req, res) {
   var date = new Date(),
-      time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +
-             date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+    time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +
+    date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+  var md5 = crypto.createHash('md5'),
+    email_MD5 = md5.update(req.body.email.toLowerCase()).digest('hex'),
+    head = "http://www.gravatar.com/avatar/" + email_MD5 + "?s=48";
   var comment = {
-      name: req.body.name,
-      email: req.body.email,
-      website: req.body.website,
-      time: time,
-      content: req.body.content
+    name: req.body.name,
+    head: head,
+    email: req.body.email,
+    website: req.body.website,
+    time: time,
+    content: req.body.content
   };
   var newComment = new Comment(req.params.name, req.params.day, req.params.title, comment);
   newComment.save(function (err) {
@@ -310,10 +314,10 @@ router.post('/edit/:name/:day/:title', function (req, res) {
     var url = '/u/' + req.params.name + '/' + req.params.day + '/' + req.params.title;
     if (err) {
       req.flash('error', err);
-      return res.redirect(url);//出错！返回文章页
+      return res.redirect(url); //出错！返回文章页
     }
     req.flash('success', '修改成功!');
-    res.redirect(url);//成功！返回文章页
+    res.redirect(url); //成功！返回文章页
   });
 });
 
@@ -349,7 +353,7 @@ router.get('/tags', function (req, res) {
 router.get('/tags/:tag', function (req, res) {
   Post.getTag(req.params.tag, function (err, posts) {
     if (err) {
-      req.flash('error',err);
+      req.flash('error', err);
       return res.redirect('/');
     }
     res.render('tag', {
