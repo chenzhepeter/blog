@@ -33,16 +33,26 @@ hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
     return options.inverse(this);
   }
 });
-hbs.registerHelper('add', function(value, addition){
+hbs.registerHelper('add', function (value, addition) {
   return value + addition;
 });
-hbs.registerHelper('subtract', function(value, addition){
+hbs.registerHelper('subtract', function (value, addition) {
   return value - addition;
 });
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
+var fs = require('fs');
+var accessLog = fs.createWriteStream(__dirname + '/access.log', {
+  flags: 'a'
+});
+var errorLog = fs.createWriteStream(__dirname + '/error.log', {
+  flags: 'a'
+});
+
+// setup the logger
+app.use(logger('combined', {stream: accessLog}));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -73,7 +83,12 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-// app.use('/users', users);
+
+app.use(function (err, req, res, next) {
+  var meta = '[' + new Date() + '] ' + req.url + '\n';
+  errorLog.write(meta + err.stack + '\n');
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
