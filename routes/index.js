@@ -5,15 +5,14 @@ var crypto = require('crypto'),
   fs = require('fs'),
   formidable = require('formidable'),
   User = require('../models/user.js'),
-  Post = require('../models/post.js'),
-  Comment = require('../models/comment.js');
+  Post = require('../models/post.js');
 
 /* GET home page. */
 router.get('/', function (req, res) {
   //判断是否是第一页，并把请求的页数转换成 number 类型
   var page = req.query.p ? parseInt(req.query.p) : 1;
   //查询并返回第 page 页的 10 篇文章
-  Post.getTen(null, page, function (err, posts, total) {
+  Post.getTen(page, function (err, posts, total) {
     if (err) {
       posts = [];
     }
@@ -278,8 +277,7 @@ router.post('/u/:name/:day/:title', function (req, res) {
     time: time,
     content: req.body.content
   };
-  var newComment = new Comment(req.params.name, req.params.day, req.params.title, comment);
-  newComment.save(function (err) {
+  Post.updateComment(req.params.name, req.params.day, req.params.title, comment, function (err) {
     if (err) {
       req.flash('error', err);
       return res.redirect('back');
@@ -288,6 +286,7 @@ router.post('/u/:name/:day/:title', function (req, res) {
     res.redirect('back');
   });
 });
+
 
 router.get('/edit/:name/:day/:title', checkLogin);
 router.get('/edit/:name/:day/:title', function (req, res) {
