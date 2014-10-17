@@ -1,12 +1,10 @@
 <br />
-<div>
+<div class="container">
   {{#unless isFirstPage }}
-  <span class="prepage"><a title="上一页" href="?p={{ subtract page 1 }}">上一页</a>
-  </span>
+    <a href="?p={{ subtract page 1 }}" class="btn btn-primary pull-left">Previous Page <i class="glyphicon glyphicon-chevron-left"></i></a>
   {{/unless }}
 
   {{#unless isLastPage }}
-  <span class="nextpage"><a title="下一页" href="?p={{ add page 1 }}">下一页</a>
-  </span>
+    <a href="?p={{ add page 1 }}" class="btn btn-primary pull-right">Next Page <i class="glyphicon glyphicon-chevron-right"></i></a>
   {{/unless }}
 </div>

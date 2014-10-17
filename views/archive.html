@@ -1,14 +1,23 @@
 {{> header }}
-<ul class="archive">
-  {{#each posts }}
-    <li>
-      <h3>{{time.year }}</h3>
-    </li>
-    <li>
-      <time>{{time.day }}</time>
-    </li>
-    <li><a href="/u/{{name }}/{{time.day }}/{{title }}">{{ title }}</a>
-    </li>
-  {{/each}}
-</ul>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel">
+        <div class="panel-body">
+
+          {{#each posts}}
+            <h3>{{time.year }}</h3>
+
+            <time>{{time.day }}</time>
+
+            <a href="/u/{{name }}/{{time.day }}/{{title }}">{{ title }}</a>
+            <br>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {{> footer }}

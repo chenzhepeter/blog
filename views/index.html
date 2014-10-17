@@ -1,19 +1,65 @@
 {{> header }}
-{{#each posts}}
-  <p>
-    <h2><a href="/u/{{name}}/{{time.day}}/{{title}}">{{title}}</a>
-    </h2>
-    <a href="/u/{{name}}">
-      <img src="{{head}}" class="r_head" />
-    </a>
-  </p>
-  <p class="info">
-    作者：<a href="/u/{{name}}">{{ name }}</a> | 日期：{{ time.minute }} 标签：
-    {{#each tags}}
-      <a class="tag" href="/tags/{{this}}">{{this}}</a>
-    {{/each}}
-  </p>
-  <p>{{{ post }}}</p>
-  <p class="info">阅读：{{pv}} | 评论：{{comments.length}}</p>
-{{/each}}
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-12">
+
+      <div class="panel">
+        <div class="panel-body">
+
+          {{#each posts}}
+            <!--/stories-->
+            <div class="row">
+              <br>
+              <div class="col-md-2 col-sm-3 text-center">
+                <a class="story-img" href="/u/{{name}}">
+                  <img src="{{head}}" style="width:48px;height:48px" class="img-rounded">
+                </a>
+              </div>
+              <div class="col-md-10 col-sm-9">
+                <h3>{{title}}</h3>
+                <div class="row">
+                  <div class="col-xs-9">
+                    <p>{{{ post }}}</p>
+                    <p class="lead">
+                      <a href="/u/{{name}}/{{time.day}}/{{title}}" class="btn btn-default">Read More</a>
+                    </p>
+                    <p class="pull-right">
+
+                      {{#each tags}}
+                        <a class="label label-default" href="/tags/{{this}}">{{this}}</a>
+                      {{/each}}
+                    </p>
+                    <ul class="list-inline">
+                      <li><a href="/u/{{name}}">{{ name }}</a>
+
+                      </li>
+                      <li><a href="/u/{{name}}/{{time.day}}/{{title}}">{{ time.minute }}</a>
+                      </li>
+                      <li><a href="/u/{{name}}/{{time.day}}/{{title}}"><i class="glyphicon glyphicon-comment"></i> {{comments.length}} Comments</a>
+                      </li>
+                      <li><a href="/u/{{name}}/{{time.day}}/{{title}}"><i class="glyphicon glyphicon-user"></i> {{pv}} Reads</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-xs-3"></div>
+                </div>
+                <br>
+                <br>
+              </div>
+            </div>
+            <hr>
+          {{/each}}
+          <!--/stories-->
+
+
+
+        </div>
+      </div>
+
+    </div>
+    <!--/col-12-->
+  </div>
+</div>
+
 {{> paging }} {{> footer }}
